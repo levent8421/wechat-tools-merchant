@@ -2,6 +2,7 @@ import Login from '../component/Login';
 import MainContent from '../component/MainContent';
 import NotFound from '../component/NotFound';
 import Home from '../component/Home';
+import MainContentHome from '../component/content/MainContentHome';
 
 const routes = [
     {
@@ -25,4 +26,12 @@ const routes = [
         component: Login,
     },
 ];
-export {routes};
+
+const contentRouters = [
+    {
+        path: '/content/',
+        exact: true,
+        component: MainContentHome,
+    },
+];
+export {routes, contentRouters};

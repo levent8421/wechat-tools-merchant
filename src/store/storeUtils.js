@@ -1,4 +1,5 @@
 import {connect} from 'react-redux';
+import {setTitle, setToken} from './actionCreators';
 
 const mapAllState2Props = (state, props) => {
     return {
@@ -6,9 +7,14 @@ const mapAllState2Props = (state, props) => {
         ...state,
     };
 };
+const asPropFun = (fun, dispatch) => {
+    return (...args) => dispatch(fun(...args));
+};
 const mapAllAction2Props = (dispatch, props) => {
     return {
         ...props,
+        setToken: asPropFun(setToken, dispatch),
+        setTitle: asPropFun(setTitle, dispatch),
     };
 };
 

@@ -1,5 +1,6 @@
 import {httpRequest} from '../util/httpUtils';
 import {message} from 'antd'
+import store from '../store';
 
 const showLoading = () => {
     return message.loading('Loading...', 0)
@@ -19,8 +20,10 @@ export function request(options) {
     if (showLoadingToast) {
         hideLoadingFunc = showLoading();
     }
+    const {webToken} = store.getState();
     return new Promise((resolve, reject) => {
         const headers = options.headers || {};
+        headers['X-Token'] = webToken;
         options.headers = headers;
         httpRequest(options)
             .then(res => {

@@ -2,13 +2,28 @@ import React, {Component} from 'react';
 import './Login.less';
 import {Button, Form, Input, message, Typography} from 'antd';
 import {merchantLogin} from "../api/merchant";
+import {mapStateAndActions} from '../store/storeUtils';
 
 class Login extends Component {
+    componentDidMount() {
+        const {webToken} = this.props;
+        if (webToken) {
+            this.toContentPage();
+        }
+    }
+
+    toContentPage() {
+        this.props.history.push({
+            pathname: '/content/',
+        });
+    }
+
     doLogin(data) {
-        console.log('clic')
         merchantLogin(data.loginName, data.password).then(res => {
-            console.log(res);
+            const {setToken} = this.props;
+            setToken(res.token, res.account);
             message.success('登录成功');
+            this.toHome();
         })
     }
 
@@ -36,4 +51,4 @@ class Login extends Component {
     }
 }
 
-export default Login;
+export default mapStateAndActions(Login);

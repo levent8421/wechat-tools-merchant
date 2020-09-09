@@ -10,3 +10,11 @@ export const merchantLogin = (loginName, password) => {
         }
     });
 };
+
+
+export const currentMerchant = () => {
+    return request({
+        url: '/api/token/merchant/_me',
+        method: 'get'
+    });
+};
