@@ -1,5 +1,5 @@
 import {httpRequest} from '../util/httpUtils';
-import {message} from 'antd'
+import {message, Modal} from 'antd'
 import store from '../store';
 
 const showLoading = () => {
@@ -12,6 +12,15 @@ const showError = msg => {
     message.warn(msg);
 };
 const showLoginModal = () => {
+    Modal.confirm({
+        title: '登录失效',
+        content: '您的当前登录已失效，是否重新登录？',
+        okText: '重新登录',
+        cancelText: '取消',
+        onOk: () => {
+
+        },
+    });
 };
 
 export function request(options) {

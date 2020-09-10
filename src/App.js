@@ -1,6 +1,5 @@
 import React from 'react';
 import './App.less';
-import history from './router/history';
 import {routes} from './router/routers';
 import {HashRouter as Router} from 'react-router-dom';
 import {renderRoutes} from 'react-router-config';
@@ -11,7 +10,7 @@ function App() {
     return (
         <div className="App">
             <Provider store={store}>
-                <Router history={history}>
+                <Router>
                     {renderRoutes(routes)}
                 </Router>
             </Provider>
