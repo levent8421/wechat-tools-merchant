@@ -26,3 +26,20 @@ export const setWechatInfo = (merchantId, wechatInfo) => {
         data: wechatInfo,
     });
 };
+
+
+export const resetPassword = passwordOptions => {
+    return request({
+        url: '/api/token/merchant/_reset-password',
+        method: 'post',
+        data: passwordOptions,
+    });
+};
+
+export const updateMerchantInfo = merchant => {
+    return request({
+        url: '/api/token/merchant/_me',
+        method: 'post',
+        data: merchant,
+    });
+};
