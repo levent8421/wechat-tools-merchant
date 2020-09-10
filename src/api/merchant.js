@@ -18,3 +18,11 @@ export const currentMerchant = () => {
         method: 'get'
     });
 };
+
+export const setWechatInfo = (merchantId, wechatInfo) => {
+    return request({
+        url: `/api/token/merchant/${merchantId}/_wechat-info`,
+        method: 'post',
+        data: wechatInfo,
+    });
+};

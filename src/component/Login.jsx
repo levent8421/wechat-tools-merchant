@@ -23,7 +23,7 @@ class Login extends Component {
             const {setToken} = this.props;
             setToken(res.token, res.account);
             message.success('登录成功');
-            this.toHome();
+            this.toContentPage();
         })
     }
 

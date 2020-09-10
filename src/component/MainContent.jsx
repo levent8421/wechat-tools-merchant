@@ -66,7 +66,7 @@ class MainContent extends Component {
                         <Menu.Item key="merchant-info">商户信息</Menu.Item>
                     </Menu>
                 </Sider>
-                <Layout>
+                <Layout className="content-layout">
                     <Header className="header">
                         <div className="logo">
                             WechatTools
@@ -81,13 +81,13 @@ class MainContent extends Component {
                             <Avatar icon={<UserOutlined/>}/>
                         </div>
                     </Header>
-                    <Content>
+                    <Content className="content">
                         <PageHeader title={title.mainTitle} subTitle={title.subTitle}/>
                         <div className="content-wrapper">
                             {renderRoutes(contentRouters)}
                         </div>
                     </Content>
-                    <Footer>
+                    <Footer className="footer">
                         Powered by <b>Levent8421</b>
                     </Footer>
                 </Layout>
