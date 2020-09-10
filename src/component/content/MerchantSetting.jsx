@@ -14,7 +14,14 @@ class MerchantSetting extends Component {
 
     componentDidMount() {
         this.props.setTitle('商户信息编辑', 'Edit my profiles!');
-        this.unsubscribe = store.subscribe(() => this.loadMerchant());
+        const {me} = this.props;
+        if (me) {
+            if (this.merchantForm) {
+                this.merchantForm.setFieldsValue(me);
+            }
+        } else {
+            this.unsubscribe = store.subscribe(() => this.loadMerchant());
+        }
     }
 
     componentWillUnmount() {
