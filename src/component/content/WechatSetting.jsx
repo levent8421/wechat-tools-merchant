@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
 import './WechatSetting.less';
 import {mapStateAndActions} from '../../store/storeUtils';
-import {Alert, Button, Card, Form, Input, message, Select, Upload} from 'antd';
+import {Alert, Button, Card, Form, Input, message, Modal, Select, Space, Upload} from 'antd';
 import store from '../../store';
 import {setWechatInfo} from '../../api/merchant';
 import {findStrategyByMerchant, setTokenStrategy} from '../../api/tokenStrategy';
+import {enableFile, fetchWechatConfig} from '../../api/wechatConfig';
 
 const TokenFetchStrategies = [
     {
@@ -36,18 +37,29 @@ class WechatSetting extends Component {
             merchant: {},
             selectedStrategyCode: -1,
             strategy: {},
+            wechatConfig: {},
         };
     }
 
     componentDidMount() {
         this.props.setTitle('微信公众号配置', 'wechat setting');
         this.subscribeStore();
+        this.fetchWechatConfig()
     }
 
     componentWillUnmount() {
         if (this.unsubscribe) {
             this.unsubscribe();
         }
+    }
+
+    fetchWechatConfig() {
+        fetchWechatConfig().then(res => {
+            this.setState({wechatConfig: res,})
+            if (this.wechatConfigForm) {
+                this.wechatConfigForm.setFieldsValue(res);
+            }
+        })
     }
 
     fetchTokenStrategy(merchant) {
@@ -109,9 +121,35 @@ class WechatSetting extends Component {
         })
     }
 
+    onVerifyFileUploadChanged(info) {
+        const {file} = info;
+        if (file.status === 'done') {
+            const {response} = file;
+            if (response.code !== 200) {
+                message.error(response.msg);
+            } else {
+                Modal.info({
+                    title: '文件上传成功',
+                    content: `文件${response.data}上传成功，请在10分钟内完成微信配置`
+                });
+            }
+        }
+    }
+
+    enableWechatVerifyFile(file) {
+        enableFile(file).then(() => {
+            Modal.info({
+                title: '文件启用成功',
+                content: '文件启用成功，请在10分钟内完成微信配置！'
+            });
+        });
+    }
+
     render() {
-        const {merchant, selectedStrategyCode, strategy} = this.state;
+        const {merchant, selectedStrategyCode, strategy, wechatConfig} = this.state;
+        const verifyFiles = wechatConfig.verifyFiles || [];
         const strategyFormRender = StrategyFormItemRenders[selectedStrategyCode];
+        const webToken = this.props.webToken;
         return (
             <div className="wechat-setting">
                 <Card title="Step 1: 微信公众号配置" extra={merchant.name}>
@@ -136,19 +174,35 @@ class WechatSetting extends Component {
                 </Card>
                 <Card title="Step 2: 配置微信公众平台" extra="wt.levent8421.com">
                     <p>请参考以下配置完成微信公众平台配置！</p>
-                    <Form name="wechat-platform-form" initialValues={{ip: '123'}}>
-                        <Form.Item label="服务器白名单" name="ip">
+                    <Form name="wechat-platform-form" ref={form => this.wechatConfigForm = form}>
+                        <Form.Item label="服务器白名单" name="serverIp">
                             <Input readOnly={true}/>
                         </Form.Item>
                         <Form.Item label="微信服务器校验文件">
-                            <Upload>
+                            <Upload
+                                action="/api/token/verify-file/"
+                                headers={{'X-Token': webToken}}
+                                method="put"
+                                showUploadList={false}
+                                onChange={info => this.onVerifyFileUploadChanged(info)}>
                                 <Button type="primary">点击上传</Button>
                             </Upload>
+                            <div>
+                                <Space>
+                                    <span>已上传文件(点击文件启用)：</span>
+                                    {
+                                        verifyFiles.map(file => <Button type="default" key={file}
+                                                                        onClick={() => this.enableWechatVerifyFile(file)}>
+                                            {file}
+                                        </Button>)
+                                    }
+                                </Space>
+                            </div>
                         </Form.Item>
                         <Form.Item label="JS API安全域名" name="jsApiDomain">
                             <Input readOnly={true}/>
                         </Form.Item>
-                        <Form.Item label="微信授权安全域名" name="authDomain">
+                        <Form.Item label="网页授权域名" name="authDomain">
                             <Input readOnly={true}/>
                         </Form.Item>
                     </Form>
