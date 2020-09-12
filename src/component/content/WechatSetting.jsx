@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './WechatSetting.less';
 import {mapStateAndActions} from '../../store/storeUtils';
-import {Alert, Button, Card, Form, Input, message, Select} from 'antd';
+import {Alert, Button, Card, Form, Input, message, Select, Upload} from 'antd';
 import store from '../../store';
 import {setWechatInfo} from '../../api/merchant';
 import {findStrategyByMerchant, setTokenStrategy} from '../../api/tokenStrategy';
@@ -52,7 +52,10 @@ class WechatSetting extends Component {
 
     fetchTokenStrategy(merchant) {
         findStrategyByMerchant(merchant.id).then(res => {
-            this.setState({strategy: res});
+            this.setState({
+                strategy: res,
+                selectedStrategyCode: res.strategyCode,
+            });
             if (this.strategyForm) {
                 this.strategyForm.setFieldsValue(res);
             }
@@ -95,6 +98,7 @@ class WechatSetting extends Component {
     }
 
     onStrategyChange(code) {
+        console.log('chane', code);
         this.setState({selectedStrategyCode: code})
     }
 
@@ -110,7 +114,7 @@ class WechatSetting extends Component {
         const strategyFormRender = StrategyFormItemRenders[selectedStrategyCode];
         return (
             <div className="wechat-setting">
-                <Card title="微信公众号配置" extra={merchant.name}>
+                <Card title="Step 1: 微信公众号配置" extra={merchant.name}>
                     <p className="kvp">
                         <b className="label">商户名称:</b>
                         <span className="value">{merchant.name}</span>
@@ -130,7 +134,26 @@ class WechatSetting extends Component {
                         </Form.Item>
                     </Form>
                 </Card>
-                <Card title="微信令牌获取策略配置" extra="wechat token fetch strategy">
+                <Card title="Step 2: 配置微信公众平台" extra="wt.levent8421.com">
+                    <p>请参考以下配置完成微信公众平台配置！</p>
+                    <Form name="wechat-platform-form" initialValues={{ip: '123'}}>
+                        <Form.Item label="服务器白名单" name="ip">
+                            <Input readOnly={true}/>
+                        </Form.Item>
+                        <Form.Item label="微信服务器校验文件">
+                            <Upload>
+                                <Button type="primary">点击上传</Button>
+                            </Upload>
+                        </Form.Item>
+                        <Form.Item label="JS API安全域名" name="jsApiDomain">
+                            <Input readOnly={true}/>
+                        </Form.Item>
+                        <Form.Item label="微信授权安全域名" name="authDomain">
+                            <Input readOnly={true}/>
+                        </Form.Item>
+                    </Form>
+                </Card>
+                <Card title="Step 3: 微信令牌获取策略配置" extra="wechat token fetch strategy">
                     <Form ref={form => this.strategyForm = form} onFinish={data => this.setTokenStrategy(data)}>
                         <Form.Item label="获取策略" name="strategyCode" rules={[{required: true, message: '请选择获取策略'}]}>
                             <Select onChange={(code) => this.onStrategyChange(code)} defaultActiveFirstOption={true}>
