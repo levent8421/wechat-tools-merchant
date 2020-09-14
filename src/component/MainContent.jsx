@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {Avatar, Layout, Menu, message, PageHeader} from 'antd';
 import './MainContent.less';
-import {UserOutlined} from '@ant-design/icons';
 import {mapStateAndActions} from '../store/storeUtils';
 import {currentMerchant} from '../api/merchant';
 import {contentRouters} from '../router/routers';
@@ -53,7 +52,7 @@ class MainContent extends Component {
             <Layout className="main-content">
                 <Sider className="sider">
                     <div className="avatar">
-                        <Avatar icon={<UserOutlined/>} size="large"/>
+                        <Avatar icon={<img src={me.logoPath} alt={me.name}/>} size="large"/>
                     </div>
                     <Menu theme="dark" mode="inline" onClick={(...args) => this.onMenuClick(...args)}>
                         <Menu.Item key="home">首页</Menu.Item>
@@ -78,7 +77,7 @@ class MainContent extends Component {
                         </Menu>
                         <div className="avatar">
                             <span className="name">{me.name}</span>
-                            <Avatar icon={<UserOutlined/>}/>
+                            <Avatar icon={<img src={me.logoPath} alt={me.name}/>}/>
                         </div>
                     </Header>
                     <Content className="content">

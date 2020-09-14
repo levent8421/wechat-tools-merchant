@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import {mapStateAndActions} from '../../store/storeUtils';
-import {Button, Card, Form, Input, message, Modal} from 'antd';
+import {Button, Card, Form, Input, message, Modal, Upload} from 'antd';
 import store from '../../store';
 import {resetPassword, updateMerchantInfo} from '../../api/merchant';
+import './MerchantSetting.less';
 
 class MerchantSetting extends Component {
     constructor(props) {
@@ -78,11 +79,41 @@ class MerchantSetting extends Component {
         });
     }
 
+    onLogoUploadChange(info) {
+        const {file} = info;
+        if (file.status === 'done') {
+            const resp = file.response;
+            if (resp.code === 200) {
+                const {data} = resp;
+                const token = this.props.webToken;
+                this.props.setToken(token, data);
+                message.success('LOGO已设置');
+            }
+        }
+    }
+
     render() {
         const me = this.props.me || {};
         const {changePasswordModalVisible} = this.state;
+        const {webToken} = this.props;
         return (
             <div className="merchant-setting">
+                <Card title="商户LOGO">
+                    <Form name="logo-form">
+                        <Form.Item label="上传商户图片">
+                            <Upload
+                                action="/api/token/merchant/logo"
+                                method="POST"
+                                headers={{
+                                    'X-Token': webToken
+                                }}
+                                showUploadList={false}
+                                onChange={info => this.onLogoUploadChange(info)}>
+                                <img src={me.logoPath} alt={me.name} className="logo-preview"/>
+                            </Upload>
+                        </Form.Item>
+                    </Form>
+                </Card>
                 <Card title="商户信息" extra={me.sn}>
                     <Form name="merchant-form" ref={form => this.merchantForm = form}
                           onFinish={data => this.doUpdateMerchantInfo(data)}>
