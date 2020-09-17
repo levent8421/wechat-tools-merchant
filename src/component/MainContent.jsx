@@ -14,7 +14,8 @@ const MenuKeyPathTable = {
     'invitation': '/content/invitation',
     'wechat-pay': '/content/pay',
     'luck-draw': '/content/luck-draw',
-    'merchant-info': '/content/merchant',
+    'apps-folder': '/content/apps-folder',
+    'apps': '/content/apps',
 };
 
 class MainContent extends Component {
@@ -57,6 +58,7 @@ class MainContent extends Component {
                     <Menu theme="dark" mode="inline" onClick={(...args) => this.onMenuClick(...args)}>
                         <Menu.Item key="home">首页</Menu.Item>
                         <Menu.Item key="wechat-setting">公众号配置</Menu.Item>
+                        <Menu.Item key="apps">应用概览</Menu.Item>
                         <Menu.SubMenu title="功能配置">
                             <Menu.Item key="invitation">关注抽奖</Menu.Item>
                             <Menu.Item key="wechat-pay">微信支付</Menu.Item>

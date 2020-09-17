@@ -5,6 +5,7 @@ import Home from '../component/Home';
 import MainContentHome from '../component/content/MainContentHome';
 import WechatSetting from '../component/content/WechatSetting';
 import MerchantSetting from '../component/content/MerchantSetting';
+import MerchantApps from '../component/content/MerchantApps';
 
 const routes = [
     {
@@ -44,6 +45,11 @@ const contentRouters = [
         path: '/content/merchant',
         exact: true,
         component: MerchantSetting,
+    },
+    {
+        path: '/content/apps',
+        exact: true,
+        component: MerchantApps,
     },
 ];
 export {routes, contentRouters};
