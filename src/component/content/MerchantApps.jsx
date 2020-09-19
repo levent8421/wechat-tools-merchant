@@ -24,10 +24,12 @@ class MerchantApps extends Component {
 
     render() {
         const {inviteFollowApps} = this.state;
+        console.log(inviteFollowApps);
         return (
             <div className="merchant-apps">
                 <Collapse defaultActiveKey={['invite-follow-apps']}>
                     <Panel key="invite-follow-apps" header="转发关注抽奖APP">
+
                     </Panel>
                 </Collapse>
             </div>

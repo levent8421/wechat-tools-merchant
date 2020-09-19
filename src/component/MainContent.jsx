@@ -59,7 +59,7 @@ class MainContent extends Component {
                         <Menu.Item key="home">首页</Menu.Item>
                         <Menu.Item key="wechat-setting">公众号配置</Menu.Item>
                         <Menu.Item key="apps">应用概览</Menu.Item>
-                        <Menu.SubMenu title="功能配置">
+                        <Menu.SubMenu title="应用管理">
                             <Menu.Item key="invitation">关注抽奖</Menu.Item>
                             <Menu.Item key="wechat-pay">微信支付</Menu.Item>
                             <Menu.Item key="luck-draw">幸运转盘</Menu.Item>

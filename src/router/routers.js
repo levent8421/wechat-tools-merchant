@@ -6,6 +6,7 @@ import MainContentHome from '../component/content/MainContentHome';
 import WechatSetting from '../component/content/WechatSetting';
 import MerchantSetting from '../component/content/MerchantSetting';
 import MerchantApps from '../component/content/MerchantApps';
+import InviteFollowApp from '../component/content/InviteFollowApp';
 
 const routes = [
     {
@@ -50,6 +51,11 @@ const contentRouters = [
         path: '/content/apps',
         exact: true,
         component: MerchantApps,
+    },
+    {
+        path: '/content/invitation',
+        exact: true,
+        component: InviteFollowApp,
     },
 ];
 export {routes, contentRouters};
