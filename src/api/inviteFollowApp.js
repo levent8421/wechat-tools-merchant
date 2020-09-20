@@ -24,3 +24,18 @@ export const setInviteFollowAppAsDefault = (appId, isDefault) => {
         },
     });
 };
+
+export const fetchOneInviteFollowApp = id => {
+    return request({
+        url: `/api/token/invite-follow-app/${id}`,
+        method: 'get',
+    });
+};
+
+export const setAppBaseInfo = data => {
+    return request({
+        url: `/api/token/invite-follow-app/${data.id}/_base-info`,
+        method: 'post',
+        data: data,
+    });
+};

@@ -2,32 +2,16 @@ import React, {Component} from 'react';
 import './InviteFollowApp.less';
 import {mapStateAndActions} from '../../store/storeUtils';
 import {Button, Card, Form, Input, message, Modal, Space, Switch} from 'antd';
-import {AppstoreOutlined, OrderedListOutlined, PlusOutlined} from '@ant-design/icons';
+import {AppstoreOutlined, OrderedListOutlined, PlusOutlined, RightOutlined} from '@ant-design/icons';
 import {createInviteFollowApp, fetchMyApps, setInviteFollowAppAsDefault} from '../../api/inviteFollowApp';
 import {SketchPicker} from 'react-color';
+import {inviteFollowAppStateText} from '../../util/converter';
 
-const stateTable = {
-    1: '等待审核',
-    2: '已上线',
-    3: '审核未通过',
-    5: '活动已结束',
-};
 const renderAppName = app => {
     return (<Space>
         <AppstoreOutlined/>
         <span>{app.title || '名称未设置'}</span>
     </Space>);
-};
-const renderAppState = app => {
-    const {state} = app;
-    if (!state) {
-        return '未知';
-    }
-    if (stateTable.hasOwnProperty(state)) {
-        return stateTable[state];
-    } else {
-        return `未知状态${state}`;
-    }
 };
 
 class InviteFollowApp extends Component {
@@ -76,7 +60,7 @@ class InviteFollowApp extends Component {
                             <Card key={app.id}
                                   title={renderAppName(app)}
                                   className="app-card"
-                                  extra={renderAppState(app)}>
+                                  extra={this.renderAppState(app)}>
                                 <Space>
                                     <span>默认应用</span>
                                     <Switch checked={app.defaultApp}
@@ -92,6 +76,12 @@ class InviteFollowApp extends Component {
         );
     }
 
+    renderAppState(app) {
+        const {state} = app;
+        const stateText = inviteFollowAppStateText(state);
+        return (<Button type="link" onClick={() => this.toAppDetails(app)}>{stateText.text}<RightOutlined/></Button>);
+    };
+
     renderCreateModal(show) {
         const {showThemeColorPicker, themeColor} = this.state;
         return (<Modal visible={show}
@@ -105,7 +95,7 @@ class InviteFollowApp extends Component {
                 <Form.Item name="title" label="标题" rules={[{required: true, message: '请输入标题'}]}>
                     <Input/>
                 </Form.Item>
-                <Form.Item name="subTitle" label="副标题">
+                <Form.Item name="subtitle" label="副标题">
                     <Input/>
                 </Form.Item>
                 <Form.Item name="footerText" label="底部文字">
@@ -141,6 +131,12 @@ class InviteFollowApp extends Component {
             const {title} = res;
             message.success(`${isDefault ? '' : '取消'}设置[${title}]为默认应用`);
             this.refreshApps();
+        });
+    }
+
+    toAppDetails(app) {
+        this.props.history.push({
+            pathname: `/content/${app.id}/invite-app-details`,
         });
     }
 }

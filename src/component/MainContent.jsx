@@ -16,6 +16,7 @@ const MenuKeyPathTable = {
     'luck-draw': '/content/luck-draw',
     'apps-folder': '/content/apps-folder',
     'apps': '/content/apps',
+    'merchant-info': '/content/merchant',
 };
 
 class MainContent extends Component {
