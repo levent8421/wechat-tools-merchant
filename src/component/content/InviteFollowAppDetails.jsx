@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
 import {mapStateAndActions} from '../../store/storeUtils';
-import {Button, Card, DatePicker, Form, Input, message, Switch} from 'antd';
-import {fetchOneInviteFollowApp, setAppBaseInfo} from '../../api/inviteFollowApp';
+import {Button, Card, DatePicker, Form, Input, message, Modal, Switch} from 'antd';
+import {deleteImage, fetchOneInviteFollowApp, setAppBaseInfo} from '../../api/inviteFollowApp';
 import {inviteFollowAppStateText} from '../../util/converter';
 import {SketchPicker} from 'react-color';
 import moment from 'moment';
 import ImageUpload from '../commons/ImageUpload';
+import './InviteFollowAppDetails.less';
+import {DeleteOutlined} from '@ant-design/icons';
 
 class InviteFollowAppDetails extends Component {
     constructor(props) {
@@ -13,6 +15,7 @@ class InviteFollowAppDetails extends Component {
         this.state = {
             app: {},
             showColorPicker: false,
+            imageLinkUrl: '',
         };
     }
 
@@ -72,10 +75,31 @@ class InviteFollowAppDetails extends Component {
         });
     }
 
+    removeImage(index) {
+        const {app} = this.state;
+        Modal.confirm({
+            icon: <DeleteOutlined/>,
+            content: '删除图片？',
+            onOk: () => {
+                deleteImage(app.id, index).then(() => {
+                    message.success('图片删除成功');
+                    this.refreshApp(app.id);
+                });
+            }
+        });
+    }
+
+    imageUploadSuccess() {
+        const {app} = this.state;
+        this.setState({imageLinkUrl: ''});
+        this.refreshApp(app.id);
+    }
+
     render() {
-        const {app, showColorPicker} = this.state;
+        const {app, showColorPicker, imageLinkUrl} = this.state;
         const stateText = inviteFollowAppStateText(app.state);
         const {themeColor} = app;
+        const images = app.images || [];
         return (
             <div className="invite-follow-app-details">
                 <Card title="APP基础信息" extra={<span style={{color: stateText.color}}>{stateText.text}</span>}>
@@ -126,6 +150,36 @@ class InviteFollowAppDetails extends Component {
                                          onSuccess={data => this.setState({app: data})}/>
                         </Form.Item>
                     </Form>
+                </Card>
+                <Card title="主体图片" extra={`图片数量:${images.length}`}>
+                    <div className="images">
+                        {
+                            images.map((image, index) => (<div className="image-item" key={image.image}>
+                                <img alt={image.url} src={image.image}/>
+                                <div className="link-info">
+                                    <p>
+                                        <b>链接到：</b>
+                                        <span>{image.url}</span>
+                                    </p>
+                                    <Button type="ghost"
+                                            icon={<DeleteOutlined/>}
+                                            onClick={() => this.removeImage(index)}>
+                                        删除图片
+                                    </Button>
+                                </div>
+                            </div>))
+                        }
+                    </div>
+                    <div className="upload">
+                        <Input onChange={e => this.setState({imageLinkUrl: e.target.value})}
+                               placeholder="请输入图片链接"
+                               value={imageLinkUrl}/>
+                        <ImageUpload name="imageFile"
+                                     data={{url: imageLinkUrl}}
+                                     url={`/api/token/invite-follow-app/${app.id}/_append-image`}
+                                     buttonText="上传新图片"
+                                     onSuccess={() => this.imageUploadSuccess()}/>
+                    </div>
                 </Card>
             </div>
         );

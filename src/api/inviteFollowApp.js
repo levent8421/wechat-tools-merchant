@@ -39,3 +39,13 @@ export const setAppBaseInfo = data => {
         data: data,
     });
 };
+
+export const deleteImage = (id, index) => {
+    return request({
+        url: `/api/token/invite-follow-app/${id}/image`,
+        method: 'delete',
+        params: {
+            index: index,
+        }
+    });
+};

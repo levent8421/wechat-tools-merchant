@@ -3,6 +3,7 @@ import {Button, message, Upload} from "antd";
 import {mapStateAndActions} from '../../store/storeUtils';
 import PropTypes from 'prop-types';
 import './ImageUpload.less';
+import {CloudUploadOutlined} from '@ant-design/icons';
 
 class ImageUpload extends Component {
     static propTypes = {
@@ -12,13 +13,19 @@ class ImageUpload extends Component {
         alt: PropTypes.string.isRequired,
         previewUrl: PropTypes.string,
         onSuccess: PropTypes.func.isRequired,
+        buttonText: PropTypes.string.isRequired,
+        buttonIcon: PropTypes.object.isRequired,
+        data: PropTypes.object,
     };
     static  defaultProps = {
         method: 'post',
         name: 'file',
         alt: '图片',
         onSuccess: () => {
-        }
+        },
+        buttonText: '点击上传',
+        buttonIcon: <CloudUploadOutlined/>,
+        data: null,
     };
 
     constructor(props) {
@@ -40,16 +47,17 @@ class ImageUpload extends Component {
     }
 
     render() {
-        const {webToken, url, method, name, alt, previewUrl} = this.props;
+        const {webToken, url, method, name, alt, previewUrl, buttonText, buttonIcon, data} = this.props;
         return (
             <Upload headers={{'X-Token': webToken}}
                     action={url}
                     method={method}
                     name={name}
                     showUploadList={false}
-                    onChange={file => this.onUploadStateChange(file)}>
+                    onChange={file => this.onUploadStateChange(file)}
+                    data={data}>
                 {previewUrl ? <img alt={alt} src={previewUrl} className="preview-img"/> :
-                    <Button type="primary">点击上传图片</Button>}
+                    <Button type="primary" icon={buttonIcon}>{buttonText}</Button>}
             </Upload>
         );
     }
