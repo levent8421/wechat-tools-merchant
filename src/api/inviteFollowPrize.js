@@ -18,3 +18,19 @@ export const createPrizeWithAppId = (data) => {
         data: data,
     });
 };
+
+
+export const updatePrizeInfo = prize => {
+    return request({
+        url: `/api/token/invite-follow-prize/${prize.id}`,
+        method: 'post',
+        data: prize,
+    });
+};
+
+export const togglePrizeState = id => {
+    return request({
+        url: `/api/token/invite-follow-prize/${id}/_toggle-state`,
+        method: 'post',
+    });
+};

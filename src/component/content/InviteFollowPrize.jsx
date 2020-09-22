@@ -4,7 +4,7 @@ import {Button, Card, Form, Input, InputNumber, message, Modal, Space, Table} fr
 import {PlusCircleOutlined} from '@ant-design/icons';
 import {fetchOneInviteFollowApp} from '../../api/inviteFollowApp';
 import {mapStateAndActions} from '../../store/storeUtils';
-import {createPrizeWithAppId, fetchPrizesByApp} from '../../api/inviteFollowPrize';
+import {createPrizeWithAppId, fetchPrizesByApp, togglePrizeState, updatePrizeInfo} from '../../api/inviteFollowPrize';
 import './InviteFollowPrize.less';
 import ImageUpload from "../commons/ImageUpload";
 import {inviteFollowPrizeStateText} from '../../util/converter';
@@ -16,6 +16,8 @@ class InviteFollowPrize extends Component {
             app: {},
             prizes: [],
             createModalVisible: false,
+            editModalVisible: false,
+            editPrize: {},
         };
     }
 
@@ -63,19 +65,24 @@ class InviteFollowPrize extends Component {
         });
     }
 
-    deletePrize(prize) {
-
+    togglePrizeState(prize) {
+        togglePrizeState(prize.id).then(res => {
+            this.refreshPrizes(this.appId);
+            message.success(`奖品[${res.name}]状态已更新！`);
+        });
     }
 
-    updatePrizeState(prize, state) {
-
+    showEditModal(prize, show) {
+        if (this.editForm) {
+            this.editForm.setFieldsValue(prize);
+        }
+        this.setState({editModalVisible: show, editPrize: prize,});
     }
 
     renderOperations(value, row) {
         return (<Space>
-            <Button type="link" onClick={() => this.deletePrize(row)}>删除</Button>
-            <Button type="link" onClick={() => this.updatePrizeState(row, false)}>停用</Button>
-            <Button type="link" onClick={() => this.updatePrizeState(row, true)}>启用</Button>
+            <Button type="link" onClick={() => this.showEditModal(row, true)}>编辑</Button>
+            <Button type="link" onClick={() => this.togglePrizeState(row)}>停用/启用</Button>
         </Space>);
     }
 
@@ -99,9 +106,20 @@ class InviteFollowPrize extends Component {
                              onSuccess={res => this.onImageUploadSuccess(res)}/>);
     }
 
+    updatePrize(data) {
+        console.log(data);
+        const {editPrize} = this.state;
+        const {id} = editPrize;
+        data.id = id;
+        updatePrizeInfo(data).then(res => {
+            this.refreshPrizes(this.appId);
+            message.success(`奖品[${res.name}]信息已更新！`);
+            this.showEditModal({}, false);
+        });
+    }
 
     render() {
-        const {app, prizes, createModalVisible} = this.state;
+        const {app, prizes, createModalVisible, editModalVisible, editPrize} = this.state;
         return (
             <div className="invite-follow-prize">
                 <Card title={app.title} extra={app.subtitle}>
@@ -119,7 +137,7 @@ class InviteFollowPrize extends Component {
                         <Table.Column title="图片" dataIndex="image"
                                       render={(value, row) => this.renderImage(value, row)}/>
                         <Table.Column title="总数" dataIndex="totalStock"/>
-                        <Table.Column title="中奖率" dataIndex="winningRate"/>
+                        <Table.Column title="中奖率(%)" dataIndex="winningRate"/>
                         <Table.Column title="已中奖数" dataIndex="sales"/>
                         <Table.Column title="状态" dataIndex="state" render={value => {
                             const stateText = inviteFollowPrizeStateText(value);
@@ -144,8 +162,30 @@ class InviteFollowPrize extends Component {
                         <Form.Item name="totalStock" label="总数" rules={[{required: true, message: '请输入总数'}]}>
                             <InputNumber/>
                         </Form.Item>
-                        <Form.Item name="winningRate" label="中奖率" rules={[{required: true, message: '请输入中奖率'}]}>
+                        <Form.Item name="winningRate" label="中奖率(%)" rules={[{required: true, message: '请输入中奖率'}]}>
+                            <InputNumber max={100} min={0}/>
+                        </Form.Item>
+                    </Form>
+                </Modal>
+                <Modal visible={editModalVisible}
+                       title="编辑奖品"
+                       onCancel={() => this.showEditModal(editPrize, false)}
+                       onOk={() => this.editForm.submit()}
+                       okText="确认更改" cancelText="取消更改"
+                       maskClosable={false}
+                       closable={false}>
+                    <Form name="edit-form"
+                          ref={form => this.editForm = form}
+                          onFinish={data => this.updatePrize(data)}
+                          initialValues={editPrize}>
+                        <Form.Item name="name" label="名称" rules={[{required: true, message: '请输入奖品名称！'}]}>
+                            <Input/>
+                        </Form.Item>
+                        <Form.Item name="totalStock" label="总数" rules={[{required: true, message: '请输入奖品数量！'}]}>
                             <InputNumber/>
+                        </Form.Item>
+                        <Form.Item name="winningRate" label="中奖率(%)" rules={[{required: true, message: '请输入奖品中奖率！'}]}>
+                            <InputNumber max={100} min={0}/>
                         </Form.Item>
                     </Form>
                 </Modal>

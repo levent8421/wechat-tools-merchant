@@ -98,8 +98,11 @@ class InviteFollowAppDetails extends Component {
     toPrizeEditPage() {
         const {app} = this.state;
         const appId = app.id;
-        const pathname = `/content/invite-follow-prize?appId=${appId}`;
-        this.props.history.push({pathname});
+        const pathname = `/content/invite-follow-prize`;
+        this.props.history.push({
+            pathname: pathname,
+            search: `?appId=${appId}`,
+        });
     }
 
     render() {
