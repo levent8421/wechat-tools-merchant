@@ -32,3 +32,24 @@ export const inviteFollowAppStateText = state => {
 export const formatDate = date => {
     return dateformat(date, 'yyyy-MM-dd');
 };
+
+const INVITE_FOLLOW_PRIZE_STATE_TABLE = {
+    1: {
+        color: PRIMARY,
+        text: '可用',
+    },
+    2: {
+        color: WARN,
+        text: '停用',
+    },
+};
+
+export const inviteFollowPrizeStateText = state => {
+    if (INVITE_FOLLOW_PRIZE_STATE_TABLE.hasOwnProperty(state)) {
+        return INVITE_FOLLOW_PRIZE_STATE_TABLE[state];
+    }
+    return {
+        color: ERROR,
+        text: `Error:${state}`,
+    };
+};

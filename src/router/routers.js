@@ -8,6 +8,7 @@ import MerchantSetting from '../component/content/MerchantSetting';
 import MerchantApps from '../component/content/MerchantApps';
 import InviteFollowApp from '../component/content/InviteFollowApp';
 import InviteFollowAppDetails from '../component/content/InviteFollowAppDetails';
+import InviteFollowPrize from '../component/content/InviteFollowPrize';
 
 const routes = [
     {
@@ -62,6 +63,11 @@ const contentRouters = [
         path: '/content/:id/invite-app-details',
         exact: true,
         component: InviteFollowAppDetails,
+    },
+    {
+        path: '/content/invite-follow-prize',
+        exact: true,
+        component: InviteFollowPrize,
     },
 ];
 export {routes, contentRouters};

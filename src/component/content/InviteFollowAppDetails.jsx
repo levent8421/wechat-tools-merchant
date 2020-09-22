@@ -95,6 +95,13 @@ class InviteFollowAppDetails extends Component {
         this.refreshApp(app.id);
     }
 
+    toPrizeEditPage() {
+        const {app} = this.state;
+        const appId = app.id;
+        const pathname = `/content/invite-follow-prize?appId=${appId}`;
+        this.props.history.push({pathname});
+    }
+
     render() {
         const {app, showColorPicker, imageLinkUrl} = this.state;
         const stateText = inviteFollowAppStateText(app.state);
@@ -134,6 +141,9 @@ class InviteFollowAppDetails extends Component {
                             <Button type="primary" htmlType="submit">保存</Button>
                         </Form.Item>
                     </Form>
+                </Card>
+                <Card title="奖品编辑" extra="Edit prize">
+                    <Button type="link" onClick={() => this.toPrizeEditPage()}>编辑抽奖奖品</Button>
                 </Card>
                 <Card title="基本图片">
                     <Form name="base-images">
