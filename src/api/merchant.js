@@ -43,3 +43,11 @@ export const updateMerchantInfo = merchant => {
         data: merchant,
     });
 };
+
+
+export const fetchQrCode = () => {
+    return request({
+        url: '/api/token/merchant/_qr-code',
+        method: 'get',
+    });
+};
